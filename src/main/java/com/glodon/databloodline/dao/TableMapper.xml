@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.glodon.databloodline.dao.TableMapper">
+    
+    <resultMap id="TableResult" type="com.glodon.databloodline.pojo.Table">
+        <id property="id" column="t_id"/>
+        <result property="tableName" column="table_name"/>
+    </resultMap>
+    
+    <insert id="addTable" parameterType="com.glodon.databloodline.pojo.Table">
+        insert into tables(table_name)
+        values (#{tableName});
+    </insert>
+    <delete id="deleteTable">
+        delete from tables
+        where t_id=#{tableId};
+    </delete>
+    <update id="updateTable" parameterType="com.glodon.databloodline.pojo.Table">
+        update tables
+        set table_name=#{tableName}
+        where t_id=#{id};
+    </update>
+    <select id="queryTable" resultMap="TableResult">
+        select *
+        from tables
+        where t_id=#{tableId};
+    </select>
+    <select id="queryAllTables" resultMap="TableResult">
+        select *
+        from tables;
+    </select>
+    <select id="queryTableByName" resultMap="TableResult">
+        select *
+        from tables
+        where table_name=#{tableName};
+    </select>
+</mapper>

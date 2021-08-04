@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.glodon.databloodline.dao.DependencyMapper">
+
+    <resultMap id="DependencyResult" type="com.glodon.databloodline.pojo.Dependency">
+        <id property="id" column="d_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="parentName" column="parent_name"/>
+        <result property="childId" column="child_id"/>
+        <result property="childName" column="child_name"/>
+    </resultMap>
+
+    <sql id="queryDependenciesVo">
+        select d.*, pt.table_name as parent_name, ct.table_name as child_name
+        from dependencies d
+        left join tables pt
+        on d.parent_id = pt.t_id
+        left join tables ct
+        on d.child_id = ct.t_id
+    </sql>
+
+    <insert id="addDependency" parameterType="com.glodon.databloodline.pojo.Dependency">
+        insert into dependencies(parent_id, child_id)
+        values (#{parentId}, #{childId})
+    </insert>
+    <delete id="deleteDependency" parameterType="int">
+        delete from dependencies
+        where d_id=#{dependencyId};
+    </delete>
+    <update id="updateDependency" parameterType="com.glodon.databloodline.pojo.Dependency">
+        update dependencies
+        set parent_id=#{parentId}, child_id=#{childId}
+        where d_id=#{id}
+    </update>
+    <select id="queryDependency" resultMap="DependencyResult">
+        <include refid="queryDependenciesVo"/>
+        where d_id=#{dependencyId};
+    </select>
+    <select id="queryAllDependencies" resultMap="DependencyResult">
+        <include refid="queryDependenciesVo"/>
+    </select>
+    <select id="queryParentDependenciesByName" resultMap="DependencyResult">
+        <include refid="queryDependenciesVo"/>
+        where ct.table_name = #{tableName};
+    </select>
+    <select id="queryChildDependenciesByName" resultMap="DependencyResult">
+        <include refid="queryDependenciesVo"/>
+        where pt.table_name = #{tableName};
+    </select>
+</mapper>
